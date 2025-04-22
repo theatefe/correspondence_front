@@ -1,0 +1,179 @@
+import React, { useRef } from "react"
+import { toPng } from "html-to-image"
+import { Container, Row, Col } from "reactstrap"
+
+//Import Breadcrumb
+import Breadcrumbs from "../../components/Common/Breadcrumb"
+import FullCalendar from "@fullcalendar/react"
+import dayGridPlugin from "@fullcalendar/daygrid"
+import interactionPlugin, { Draggable } from "@fullcalendar/interaction"
+import BootstrapTheme from "@fullcalendar/bootstrap"
+//Import Components
+import CardUser from "../Dashboard-crypto/card-user"
+import CardKalam from "../Dashboard-crypto/card-kalam"
+import MiniWidget from "../Dashboard-crypto/mini-widget"
+import WalletBalance from "../Dashboard-crypto/wallet-balance"
+import OverView from "../Dashboard-crypto/overview"
+import Transactions from "../Dashboard-crypto/transactions"
+import Notifications from "../Dashboard-crypto/notifications"
+import BuySell from "../Dashboard-crypto/buy-sell"
+import Announcements from "./../Dashboard/Announcements"
+
+function Test() {
+  const elementRef = useRef(null)
+  const htmlToImageConvert = () => {
+    toPng(elementRef.current, { cacheBust: false })
+      .then(dataUrl => {
+        const link = document.createElement("a")
+        link.download = "my-image-name.png"
+        link.href = dataUrl
+        link.click()
+      })
+      .catch(err => {
+        console.log(err)
+      })
+  }
+
+  //meta title
+  document.title = "پنل کاربری - اتوماسیون اورانوس"
+
+  return (
+    <React.Fragment>
+      <div className="page-content">
+        <div className="App">
+          <table
+            ref={elementRef}
+            style={{
+              fontFamily: "Arial, Helvetica, sans-serif",
+              borderCollapse: "collapse",
+              width: "100%",
+            }}
+          >
+            <tr>
+              <th
+                style={{
+                  backgroundColor: "#04AA6D",
+                  padding: "12px 8px",
+                  textAlign: "left",
+                  border: "1px solid #ddd",
+                }}
+              >
+                Company
+              </th>
+              <th
+                style={{
+                  backgroundColor: "#04AA6D",
+                  padding: "12px 8px",
+                  textAlign: "left",
+                  border: "1px solid #ddd",
+                }}
+              >
+                Contact
+              </th>
+              <th
+                style={{
+                  backgroundColor: "#04AA6D",
+                  padding: "12px 8px",
+                  textAlign: "left",
+                  border: "1px solid #ddd",
+                }}
+              >
+                Country
+              </th>
+            </tr>
+            <tr>
+              <td
+                style={{
+                  padding: "8px",
+                  border: "1px solid #ddd",
+                  textAlign: "left",
+                }}
+              >
+                Alfreds Futterkiste
+              </td>
+              <td
+                style={{
+                  padding: "8px",
+                  border: "1px solid #ddd",
+                  textAlign: "left",
+                }}
+              >
+                Maria Anders
+              </td>
+              <td
+                style={{
+                  padding: "8px",
+                  border: "1px solid #ddd",
+                  textAlign: "left",
+                }}
+              >
+                Germany
+              </td>
+            </tr>
+            <tr>
+              <td
+                style={{
+                  padding: "8px",
+                  border: "1px solid #ddd",
+                  textAlign: "left",
+                }}
+              >
+                Berglunds snabbköp
+              </td>
+              <td
+                style={{
+                  padding: "8px",
+                  border: "1px solid #ddd",
+                  textAlign: "left",
+                }}
+              >
+                Christina Berglund
+              </td>
+              <td
+                style={{
+                  padding: "8px",
+                  border: "1px solid #ddd",
+                  textAlign: "left",
+                }}
+              >
+                Sweden
+              </td>
+            </tr>
+            <tr>
+              <td
+                style={{
+                  padding: "8px",
+                  border: "1px solid #ddd",
+                  textAlign: "left",
+                }}
+              >
+                Centro comercial Moctezuma
+              </td>
+              <td
+                style={{
+                  padding: "8px",
+                  border: "1px solid #ddd",
+                  textAlign: "left",
+                }}
+              >
+                Francisco Chang
+              </td>
+              <td
+                style={{
+                  padding: "8px",
+                  border: "1px solid #ddd",
+                  textAlign: "left",
+                }}
+              >
+                Mexico
+              </td>
+            </tr>
+          </table>
+          <button onClick={htmlToImageConvert}>Download Image</button>
+        </div>
+      </div>
+    </React.Fragment>
+  )
+}
+
+export default Test

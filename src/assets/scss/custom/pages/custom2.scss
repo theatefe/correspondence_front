@@ -1,0 +1,32 @@
+.activatedBtn{
+  padding: 0px 8px;
+  border:1px solid #80db8f;
+  background-color: rgb(128, 210, 125) !important;
+  border-radius: 8px;
+  color: #fff;
+}
+
+.deactivatedBtn{
+  padding: 0px 8px;
+  border:1px solid #7e7e7e;
+  background-color: rgb(127, 127, 127) !important;
+  border-radius: 8px;
+  color: #fff;
+}
+
+.mention-input {
+  position: relative; /* Ensure that the input has a relative position */
+  direction: ltr;
+}
+
+.mention-input .mention-dropdown {
+  position: absolute; /* Position the dropdown absolutely */
+  top: 100%; /* Position it below the input */
+  left: 0; /* Align it to the left edge of the input */
+  width: 100%; /* Make sure it takes the full width of the input */
+  z-index: 1000; /* Ensure it appears above other elements */
+}
+
+.p-mention-panel, .p-component, .p-connected-overlay-enter-done {
+  left: unset !important;
+}
