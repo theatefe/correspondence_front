@@ -39,7 +39,6 @@
     "formik": "^2.2.9",
     "gojs": "^2.3.11",
     "gojs-react": "^1.1.2",
-    "google-maps-react": "^2.0.6",
     "html-to-image": "^1.11.11",
     "html2pdf.js": "^0.10.1",
     "i18next": "^22.4.6",
