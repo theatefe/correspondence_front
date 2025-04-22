@@ -24,7 +24,7 @@ import LoginApi from "../../api/user/Login"
 
 // import images
 import profile from "../../assets/images/profile-img2.png"
-import logo from "../../assets/images/uranus-logo.png"
+import logo from "../../assets/images/talie-logo.png"
 
 const Login = () => {
   const [show, setShow] = useState(false)

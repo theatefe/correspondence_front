@@ -110,7 +110,7 @@ const DetailNotification = () => {
                                       </Col>
                                       <Col className="col-12 ps-1">
                                         <div className="messageWhoIS">
-                                          اورانوس
+                                          طلیعه
                                         </div>
                                       </Col>
                                     </Row>

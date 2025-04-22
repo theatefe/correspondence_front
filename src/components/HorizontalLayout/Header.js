@@ -21,10 +21,10 @@ import ProfileMenu from "../CommonForBoth/TopbarDropdown/ProfileMenu"
 // api
 import CountInboxLetter from "api/user/letter/CountInboxLetter"
 // images
-import logo from "../../assets/images/uranus-logo.png"
-import logoLight from "../../assets/images/uranus-logo.png"
-import logoLightSvg from "../../assets/images/uranus-logo.png"
-import logoDark from "../../assets/images/uranus-logo.png"
+import logo from "../../assets/images/talie-logo.png"
+import logoLight from "../../assets/images/talie-logo.png"
+import logoLightSvg from "../../assets/images/talie-logo.png"
+import logoDark from "../../assets/images/talie-logo.png"
 
 //i18n
 import { withTranslation } from "react-i18next"

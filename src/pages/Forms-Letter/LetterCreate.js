@@ -37,18 +37,14 @@ import "toastr/build/toastr.min.css"
 // Form Editor *******************************
 import { Editor } from "react-draft-wysiwyg"
 import draftToHtml from "draftjs-to-html"
-import {
-  EditorState,
-  convertToRaw,
-  ContentState,
-} from "draft-js"
+import { EditorState, convertToRaw, ContentState } from "draft-js"
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css"
 //i18n *****************************************
 import i18n from "../../i18n"
 import { withTranslation } from "react-i18next"
 import { useTranslation } from "react-i18next"
 // Images **************************************
-import LetterImg from "../../assets/images/companies/uranus-letter-empty.jpg"
+import LetterImg from "../../assets/images/companies/talie-letter-empty.jpg"
 import attachFileImage from "../../assets/images/attachFile.png"
 // ***********************************************
 // ******************** Function *****************
@@ -1000,7 +996,11 @@ function LetterCreate() {
                                           backgroundColor: "#f5f5f5",
                                           cursor: "not-allowed",
                                         }
-                                      : {}
+                                      : {
+                                          lineHeight: "0.68",
+                                          padding: "10px",
+                                          minHeight: "200px",
+                                        }
                                   }
                                   onEditorStateChange={handleEditorChange}
                                   toolbar={{
@@ -1177,16 +1177,16 @@ function LetterCreate() {
 
                           <div
                             className="topLeftLetterhead"
-                            style={{ marginLeft: "20px" }}
+                            style={{ marginLeft: "5px", textAlign: "center" }}
                           >
-                            <div className="index date mt-4">
+                            <div className="index date mt-1">
                               <span>
                                 {["امضاشده", "شماره شده"].includes(statusLabel)
                                   ? letter.date
                                   : "-"}
                               </span>
                             </div>
-                            <div className="index letterNo mt-1">
+                            <div className="index letterNo">
                               <span>
                                 {statusLabel == "شماره شده"
                                   ? letter.number
@@ -1213,7 +1213,7 @@ function LetterCreate() {
                                 style={{
                                   maxHeight: "265px",
                                   overflow: "hidden",
-                                  lineHeight: "1.2",
+                                  lineHeight: "1",
                                 }}
                                 className="preview mt-1"
                                 dangerouslySetInnerHTML={{

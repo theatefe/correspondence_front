@@ -36,7 +36,6 @@ const LetterEdit = () => {
   const { id } = useParams()
   const navigate = useNavigate()
   const token = localStorage.getItem("token")
-  const userInfo = JSON.parse(localStorage.getItem("userInfo"))
 
   // State for letter data
   const [letter, setLetter] = useState({

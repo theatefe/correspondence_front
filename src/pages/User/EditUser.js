@@ -1198,7 +1198,7 @@ const EditUser = () => {
                                         }}
                                         options={[
                                           {
-                                            label: "اورانوس",
+                                            label: "طلیعه",
                                             value: "Exir",
                                           },
                                         ]}

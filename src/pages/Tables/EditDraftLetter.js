@@ -50,8 +50,7 @@ import { useFormik, ErrorMessage } from "formik"
 import logo from "../../assets/images/brands/avatar-temp.png"
 
 import { useCallback } from "react"
-import LetterImg from "../../assets/images/companies/uranus-letter-empty.jpg"
-import SignitureImg from "../../assets/images/companies/signiture.png"
+import LetterImg from "../../assets/images/companies/talie-letter-empty.jpg"
 
 // ********* option list select ********
 const optionGroupLetterType = [

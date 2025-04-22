@@ -35,7 +35,7 @@ function Test() {
   }
 
   //meta title
-  document.title = "پنل کاربری - اتوماسیون اورانوس"
+  document.title = "پنل کاربری - اتوماسیون طلیعه"
 
   return (
     <React.Fragment>

@@ -5,10 +5,7 @@ import { getInvoiceDetail as onGetInvoiceDetail } from "../../../store/invoices/
 import draftToHtml from "draftjs-to-html"
 //import images
 import correspondence from "../../../assets/images/icons/correspondence.png"
-import LetterImg from "../../../assets/images/companies/uranus-letter-empty.jpg"
-import ReferralImg from "../../../assets/images/icons/referralLetter.png"
-import TranscriptImg from "../../../assets/images/icons/transcriptLetter.png"
-import classnames from "classnames"
+import LetterImg from "../../../assets/images/companies/talie-letter-empty.jpg"
 
 function DetailsSection({ letterDetail, letterTransmition }) {
   // STATES HOOK ******************************
@@ -46,7 +43,7 @@ function DetailsSection({ letterDetail, letterTransmition }) {
         direction: ltr;
         position: relative;
         z-index: 10;
-        padding-top: 43px;
+        padding-top: 20px;
         padding-left: 10px;
         color: #000;
       }
@@ -56,7 +53,7 @@ function DetailsSection({ letterDetail, letterTransmition }) {
         font-size: 10px !important;
         position: relative;
         z-index: 10;
-        padding: 50px 2px;
+        padding: 10px 2px 50px 2px;
         color: #000;
       }
 
@@ -87,7 +84,7 @@ function DetailsSection({ letterDetail, letterTransmition }) {
     }
 
     .bottomLeftLetterhead p {
-      margin-top: 0;
+      margin-top: 0px;
       margin-bottom: 3px;
       display: block;
     }
@@ -263,7 +260,7 @@ function DetailsSection({ letterDetail, letterTransmition }) {
                         <div style={{ minHeight: "100%" }} id="print-content">
                           <img src={LetterImg} alt="" className="img-fluid" />
 
-                          <div className="topLeftLetterhead mt-4 z-10">
+                          <div className="topLeftLetterhead mt-1 z-10">
                             <div className="index date">
                               <span>
                                 {letterDetail.createDate
@@ -271,7 +268,7 @@ function DetailsSection({ letterDetail, letterTransmition }) {
                                   : "-"}
                               </span>
                             </div>
-                            <div className="index letterNo mt-1">
+                            <div className="index letterNo">
                               <span>
                                 {letterDetail.number
                                   ? letterDetail.number

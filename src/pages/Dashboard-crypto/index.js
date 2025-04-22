@@ -24,7 +24,7 @@ import persian_fa from "react-date-object/locales/persian_fa"
 
 const Dashboard = () => {
   //meta title
-  document.title = "پنل کاربری - اورانوس"
+  document.title = "پنل کاربری - طلیعه"
 
   return (
     <React.Fragment>

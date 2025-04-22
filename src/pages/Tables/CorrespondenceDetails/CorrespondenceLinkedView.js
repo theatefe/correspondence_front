@@ -16,7 +16,6 @@ import { saveAs } from "file-saver"
 import Select from "react-select"
 //import images
 import adobephotoshop from "../../../assets/images/users/avatar.png"
-import LetterImg from "../../../assets/images/companies/uranus-letter-empty.jpg"
 import AttachedImg from "../../../assets/images/icons/attachedImg.png"
 import ReferralImg from "../../../assets/images/icons/referralLetter.png"
 import TranscriptImg from "../../../assets/images/icons/transcriptLetter.png"

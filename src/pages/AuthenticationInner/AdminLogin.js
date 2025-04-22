@@ -19,12 +19,12 @@ import {
 import * as Yup from "yup"
 import { useFormik } from "formik"
 
-// api 
-import LoginApi from '../../api/admin/Login'
+// api
+import LoginApi from "../../api/admin/Login"
 
 // import images
 import profile from "../../assets/images/profile-img2.png"
-import logo from "../../assets/images/uranus-logo.png"
+import logo from "../../assets/images/talie-logo.png"
 
 const AdminLogin = () => {
   const [show, setShow] = useState(false)
@@ -41,7 +41,7 @@ const AdminLogin = () => {
     const data = { username, password }
 
     try {
-      const result = await LoginApi(data);
+      const result = await LoginApi(data)
       if (result.status === 200) {
         const info = result.data
         const token = info.token
@@ -50,11 +50,11 @@ const AdminLogin = () => {
           id: info.id,
           name: info.name,
           lastName: info.lastName,
-          username:info.username,
+          username: info.username,
         }
         localStorage.setItem("token", token)
         localStorage.setItem("type", type)
-        localStorage.setItem("userInfo", JSON.stringify(adminInfo));
+        localStorage.setItem("userInfo", JSON.stringify(adminInfo))
         setTextAlert("ورود شما با موفقیت انجام شد")
         setSuccessAlert(true)
         setTimeout(() => {
@@ -115,7 +115,7 @@ const AdminLogin = () => {
                   <Row>
                     <Col className="col align-self-center mt-3">
                       <div className="text-primary py-4 ps-4">
-                        <h5>  ورود مدیر به سامانه مکاتبات </h5>
+                        <h5> ورود مدیر به سامانه مکاتبات </h5>
                       </div>
                     </Col>
                     <Col className="col align-self-center">
@@ -128,12 +128,7 @@ const AdminLogin = () => {
                     <Link to="/" className="auth-logo-dark">
                       <div className="avatar-md profile-user-wid mb-4">
                         <span className="avatar-title rounded-circle border border bg-light ">
-                          <img
-                            src={logo}
-                            alt=""
-                            className=" "
-                            height="32"
-                          />
+                          <img src={logo} alt="" className=" " height="32" />
                         </span>
                       </div>
                     </Link>
