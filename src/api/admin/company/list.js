@@ -1,8 +1,6 @@
 import axios from "axios"
 
-const companiesList = async (
-  token,
-) => {
+const companiesList = async token => {
   const config = {
     headers: {
       jtoken: token,
