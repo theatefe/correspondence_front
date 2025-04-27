@@ -1,5 +1,4 @@
 import React, { useState } from "react"
-import axios from "axios"
 // Redux
 import { Link } from "react-router-dom"
 import {
@@ -236,16 +235,6 @@ const Login = () => {
                 </CardBody>
               </Card>
               <div className="mt-5 text-center">
-                {/* <p>
-                  Don&apos;t have an account ?{" "}
-                  <Link
-                    to="pages-register"
-                    className="fw-medium text-primary"
-                  >
-                    {" "}
-                    Signup now{" "}
-                  </Link>{" "}
-                </p> */}
                 <p style={{ direction: "ltr", fontFamily: "sans-serif" }}>
                   {new Date().getFullYear()} Copyright © ExirPooyan v1.0.1
                 </p>

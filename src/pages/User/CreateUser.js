@@ -1,11 +1,9 @@
 import React, { useState } from "react"
-import axios from "axios"
 import {
   Col,
   Label,
   Button,
   Input,
-  FormGroup,
   FormFeedback,
   Card,
   CardBody,
@@ -18,12 +16,7 @@ import {
   TabContent,
   TabPane,
 } from "reactstrap"
-
 import classnames from "classnames"
-
-import logo from "../../assets/images/brands/avatar-temp.png"
-import Select from "react-select"
-
 //i18n
 import i18n from "../../i18n"
 import { useTranslation } from "react-i18next"
@@ -31,18 +24,15 @@ import { useTranslation } from "react-i18next"
 //toastr
 import toastr from "toastr"
 import "toastr/build/toastr.min.css"
-import TimePicker from "react-multi-date-picker/plugins/time_picker"
-import DatePicker, { DateObject } from "react-multi-date-picker"
-import persian from "react-date-object/calendars/persian"
-import persian_fa from "react-date-object/locales/persian_fa"
 //api
 import createUserApi from "../../api/admin/user/create"
+import createUserSystemApi from "../../api/admin/userSystem/create"
 
 //Import Breadcrumb
 import Breadcrumbs from "../../components/Common/Breadcrumb"
 // Validation Formik and yup
 import * as Yup from "yup"
-import { useFormik, ErrorMessage } from "formik"
+import { useFormik } from "formik"
 
 //meta title
 document.title = "ثبت کاربر جدید - سامانه مکاتبات"
@@ -51,15 +41,8 @@ const CreateUser = () => {
   const { t } = useTranslation()
   //  variable
   const token = localStorage.getItem("token")
+  const [userId, setUserId] = React.useState()
   const [loading, setLoading] = React.useState()
-  const [gender, setGender] = React.useState()
-  const [taahol, setTaahol] = React.useState()
-  const [title, setTitle] = React.useState()
-  const [role, setRole] = React.useState(3)
-  const [activity, setActivity] = React.useState(true)
-  const [isForeignUser, setIsForeignUser] = useState(false)
-  const [company, setCompany] = useState()
-  const [birthDate, setBirthDate] = React.useState({ format: "YYYY-MM-DD" })
   const [activeTab, setactiveTab] = useState("1")
 
   const toggle = tab => {
@@ -69,36 +52,36 @@ const CreateUser = () => {
   }
   // handle create Form Api
   const handleSubmitForm = async values => {
-    const {
-      respectfulTitle,
-      name,
-      lastName,
-      fatherName,
-      nationalCode,
-      dateOfBirth,
-      email,
-      mobile,
-      education,
-      address,
-      gender,
-      maritalStatus,
-    } = values
     const data = {
-      respectfulTitle: respectfulTitle.label,
-      name: name,
-      lastName: lastName,
-      fatherName: fatherName || null,
-      nationalCode: nationalCode || null,
-      dateOfBirth: dateOfBirth || null,
-      email: email || null,
-      mobile: mobile || null,
-      education: education || null,
-      address: address || null,
-      gender: gender.value,
-      maritalStatus: maritalStatus.value,
+      respectfulTitle: values.respectfulTitle,
+      name: values.name,
+      lastName: values.lastName,
+      mobile: values.mobile,
     }
     try {
       const response = await createUserApi(token, data)
+      if (response.status == 200) {
+        setUserId(response.data.id)
+        toggle("2")
+      }
+      console.log("Response:", response)
+    } catch (err) {
+      console.error("Error:", err)
+    }
+    return
+  }
+  // handle create user system
+  const handleSubmitUserSystemForm = async values => {
+    const data = {
+      userId,
+      username: values.userName,
+      password: values.password,
+      userType: Number(1),
+      side: values.side,
+      respectfulSide: values.respectfulSide,
+    }
+    try {
+      const response = await createUserSystemApi(token, data)
       if (response.status == 200) {
         toastr.success("اطلاعات کاربر جدید با موفقیت ثبت شد")
         window.setTimeout(() => {
@@ -119,73 +102,60 @@ const CreateUser = () => {
       respectfulTitle: "",
       name: "",
       lastName: "",
-      fatherName: "",
-      nationalCode: "",
-      dateOfBirth: "",
-      email: "",
       mobile: "",
-      education: "",
-      address: "",
-      gender: "",
-      maritalStatus: "",
     },
-    onSubmit: values => {
+    // تعریف ولیدیشن دستی
+    validate: values => {
+      const errors = {}
       const fieldNames = {
-        name: "نام",
-        family: "نام خانوادگی",
         respectfulTitle: "عنوان محترمانه",
-        gender: "جنسیت",
-        maritalStatus: "وضعیت تاهل",
+        name: "نام",
+        lastName: "نام خانوادگی",
         mobile: "شماره تلفن همراه",
       }
-      // فقط فیلدهایی که در fieldNames تعریف شده‌اند و مقدارشان خالی است
-      const emptyFields = Object.keys(values).filter(
-        key => fieldNames[key] && values[key] === ""
-      )
-      if (emptyFields.length > 0) {
-        emptyFields.forEach(field => {
-          const fieldName = fieldNames[field]
-          toastr.error(`${fieldName} نمی تواند خالی باشد`)
-        })
-      } else {
-        handleSubmitForm(values)
-      }
+      // بررسی فیلدهای خالی
+      Object.keys(fieldNames).forEach(key => {
+        if (!values[key]) {
+          errors[key] = `${fieldNames[key]} نمی‌تواند خالی باشد`
+        }
+      })
+
+      return errors
+    },
+    onSubmit: values => {
+      // اگر خطایی وجود نداشته باشد، فرم سابمیت می‌شود
+      handleSubmitForm(values)
     },
   })
-  // handle birth Date //
-  function handleBirthDate(date) {
-    setBirthDate(date)
-  }
 
-  // handle Select Gender//
-  function handleSelectGender(gender) {
-    setGender(gender)
-  }
-
-  // handle select Taahol //
-  function handleSelectTaahol(value) {
-    setTaahol(value)
-  }
-
-  // handle activity
-  function handleActivity(value) {
-    setActivity(value)
-  }
-
-  // handle Select Company
-  function handleSelectCompany(value) {
-    setCompany(value)
-  }
-
-  // handle select title
-  function handleSelectTitle(value) {
-    setTitle(value)
-  }
-
-  // handle select role
-  function handleSelectRole(value) {
-    setRole(value)
-  }
+  // validation Formik and Yup //
+  const validationUserSystem = useFormik({
+    enableReinitialize: true,
+    initialValues: {
+      userName: "",
+      password: "",
+      side: "",
+      respectfulSide: "",
+    },
+    validate: values => {
+      const errors = {}
+      const fieldNames = {
+        userName: "نام کاربری",
+        password: "رمز عبور",
+        side: "سمت شغلی",
+        respectfulSide: "سمت محترمانه شغلی",
+      }
+      Object.keys(fieldNames).forEach(key => {
+        if (!values[key]) {
+          errors[key] = `${fieldNames[key]} نمی‌تواند خالی باشد`
+        }
+      })
+      return errors
+    },
+    onSubmit: values => {
+      handleSubmitUserSystemForm(values)
+    },
+  })
 
   // USE EFFECT
   React.useEffect(() => {
@@ -204,52 +174,50 @@ const CreateUser = () => {
             }`}
           >
             <Col xl={12}>
-              <form onSubmit={validation.handleSubmit}>
-                <Card>
-                  <CardBody>
-                    <CardTitle className="h4">ثبت شخص جدید</CardTitle>
-                    <p className="card-title-desc">
-                      برای ثبت شخص جدید اطلاعات زیر را تکمیل کنید.
-                    </p>
-                    <Row>
-                      <Nav tabs>
-                        <NavItem>
-                          <NavLink
-                            style={{ cursor: "pointer" }}
-                            className={classnames({
-                              active: activeTab === "1",
-                            })}
-                            onClick={() => {
-                              toggle("1")
-                            }}
-                          >
-                            مشخصات اصلی
-                          </NavLink>
-                        </NavItem>
-                        <NavItem>
-                          <NavLink
-                            style={{ cursor: "pointer" }}
-                            className={classnames({
-                              active: activeTab === "4",
-                            })}
-                            onClick={() => {
-                              toggle("4")
-                            }}
-                          >
-                            مشخصات بیشتر
-                          </NavLink>
-                        </NavItem>
-                      </Nav>
-
-                      <TabContent
-                        activeTab={activeTab}
-                        className="p-3 text-muted"
+              <Card>
+                <CardBody>
+                  <CardTitle className="h4">ثبت شخص جدید</CardTitle>
+                  <p className="card-title-desc">
+                    برای ثبت شخص جدید اطلاعات زیر را تکمیل کنید.
+                  </p>
+                  <Row>
+                    <Nav tabs>
+                      <NavItem>
+                        <NavLink
+                          style={{ cursor: "pointer" }}
+                          className={classnames({
+                            active: activeTab === "1",
+                          })}
+                          onClick={() => {
+                            toggle("1")
+                          }}
+                        >
+                          مشخصات اصلی
+                        </NavLink>
+                      </NavItem>
+                      <NavLink
+                        style={{ cursor: "pointer" }}
+                        className={classnames({
+                          active: activeTab === "2",
+                        })}
+                        // onClick={() => {
+                        //   toggle("2")
+                        // }}
                       >
-                        <TabPane tabId="1">
+                        مشخصات سیستمی
+                      </NavLink>
+                    </Nav>
+
+                    <TabContent
+                      activeTab={activeTab}
+                      className="p-3 text-muted"
+                    >
+                      <TabPane tabId="1">
+                        <form onSubmit={validation.handleSubmit}>
                           <Row>
                             <Col sm="12">
                               <Row>
-                                <Col md={4} xl={4}>
+                                <Col md={3} xl={3}>
                                   <div className="mb-3">
                                     <Label htmlFor="formrow-firstname-Input">
                                       {t("نام")}
@@ -262,7 +230,7 @@ const CreateUser = () => {
                                       onBlur={validation.handleBlur}
                                       value={validation.values.name}
                                       className="form-control"
-                                      id="formrow-firstname-Input"
+                                      id="formrow-name-Input"
                                       placeholder={"نام را وارد کنید"}
                                       invalid={
                                         validation.touched.name &&
@@ -279,7 +247,7 @@ const CreateUser = () => {
                                     ) : null}
                                   </div>
                                 </Col>
-                                <Col md={4} xl={4}>
+                                <Col md={3} xl={3}>
                                   <div className="mb-3">
                                     <Label htmlFor="formrow-personaliCode-Input">
                                       {t("نام خانوادگی")}
@@ -292,7 +260,7 @@ const CreateUser = () => {
                                       onBlur={validation.handleBlur}
                                       value={validation.values.lastName}
                                       className="form-control"
-                                      id="formrow-personaliCode-Input"
+                                      id="formrow-lastName-Input"
                                       placeholder={"نام خانوادگی را وارد کنید"}
                                       invalid={
                                         validation.touched.lastName &&
@@ -310,8 +278,8 @@ const CreateUser = () => {
                                   </div>
                                 </Col>
                                 <Col
-                                  md={4}
-                                  xl={4}
+                                  md={3}
+                                  xl={3}
                                   className="mb-3 mb-md-0 zIndex2"
                                 >
                                   <div
@@ -323,68 +291,17 @@ const CreateUser = () => {
                                       عنوان محترمانه
                                       <span className="requareForm"> * </span>
                                     </Label>
-                                    <Select
-                                      id="title"
+                                    <Input
+                                      type="text"
                                       name="respectfulTitle"
-                                      value={title}
-                                      onChange={newValue => {
-                                        handleSelectTitle(newValue),
-                                          validation.setFieldValue(
-                                            "respectfulTitle",
-                                            newValue
-                                          )
-                                      }}
-                                      options={[
-                                        { label: "خانم", value: "MRS" },
-                                        { label: "آقا", value: "MR" },
-                                        {
-                                          label: "جناب آقای مهندس",
-                                          value: "MR_ENG",
-                                        },
-                                        {
-                                          label: "جناب آقای دکتر",
-                                          value: "MR_DR",
-                                        },
-                                        { label: "جناب آقای", value: "SIR_MR" },
-                                        {
-                                          label: "سرکار خانم",
-                                          value: "SIR_MRS",
-                                        },
-                                        {
-                                          label: "سرکار خانم مهندس",
-                                          value: "SIR_MRS_ENG",
-                                        },
-                                        {
-                                          label: "سرکار خانم دکتر",
-                                          value: "SIR_MRS_DR",
-                                        },
-                                      ]}
-                                      defaultValue={null}
-                                      styles={{
-                                        menu: provided => ({
-                                          ...provided,
-                                          backgroundColor: "#fff",
-                                          color: "var(--bs-body-color)",
-                                          textAlign: "right,",
-                                        }),
-                                        option: (provided, state) => ({
-                                          ...provided,
-                                          ":hover": {
-                                            backgroundColor: "#eff2f7", // Change to your desired hover background color
-                                            cursor: "pointer", // Change the cursor to a pointer
-                                          },
-                                          backgroundColor: state.isSelected
-                                            ? "#BFC2C6"
-                                            : provided.backgroundColor,
-                                          color: "var(--bs-body-color)",
-                                          textAlign: "right,",
-                                        }),
-                                      }}
-                                      className="select2-selection text-start zIndex2"
-                                      noOptionsMessage={() =>
-                                        "گزینه مورد نظر یافت نشد"
+                                      onChange={e => validation.handleChange(e)}
+                                      onBlur={validation.handleBlur}
+                                      value={validation.values.respectfulTitle}
+                                      className="form-control"
+                                      id="formrow-respectfulTitle-Input"
+                                      placeholder={
+                                        " عنوان محترمانه را وارد کنید"
                                       }
-                                      placeholder="عنوان محترمانه کاربر را انتخاب کنید"
                                       invalid={
                                         validation.touched.respectfulTitle &&
                                         validation.errors.respectfulTitle
@@ -394,159 +311,13 @@ const CreateUser = () => {
                                     />
                                     {validation.touched.respectfulTitle &&
                                     validation.errors.respectfulTitle ? (
-                                      <div className="text-danger mt-1 small">
+                                      <FormFeedback type="invalid">
                                         {validation.errors.respectfulTitle}
-                                      </div>
+                                      </FormFeedback>
                                     ) : null}
                                   </div>
                                 </Col>
-                                <Col md={4} xl={4}>
-                                  <div className="mb-3">
-                                    <Label htmlFor="formrow-personaliCode-Input">
-                                      {t("نام پدر ")}
-                                    </Label>
-                                    <Input
-                                      type="text"
-                                      name="fatherName"
-                                      onChange={e => validation.handleChange(e)}
-                                      onBlur={validation.handleBlur}
-                                      value={validation.values.fatherName}
-                                      className="form-control"
-                                      id="formrow-personaliCode-Input"
-                                      placeholder={"نام پدر را وارد کنید"}
-                                    />
-                                  </div>
-                                </Col>
-                                <Col md={4} xl={4}>
-                                  <div className="mb-3">
-                                    <Label htmlFor="formrow-personaliCode-Input">
-                                      {t("کد ملی ")}
-                                    </Label>
-                                    <Input
-                                      type="text"
-                                      name="nationalCode"
-                                      onChange={e => validation.handleChange(e)}
-                                      onBlur={validation.handleBlur}
-                                      value={validation.values.nationalCode}
-                                      className="form-control"
-                                      id="formrow-personaliCode-Input"
-                                      placeholder={"کد ملی را وارد کنید"}
-                                    />
-                                  </div>
-                                </Col>
-                                <Col md={4} xl={4}>
-                                  <FormGroup>
-                                    <Label htmlFor="formrow-birthDate-Input">
-                                      تاریخ تولد
-                                    </Label>
-                                    <div style={{ direction: "rtl" }}>
-                                      <DatePicker
-                                        inputClass="form-control" // تغییر کلاس برای هماهنگی با فیلد کد ملی
-                                        name="dateOfBirth"
-                                        value={birthDate}
-                                        monthYearSeparator="/"
-                                        onChange={newValue => {
-                                          handleBirthDate(newValue),
-                                            validation.setFieldValue(
-                                              "dateOfBirth",
-                                              newValue
-                                            )
-                                        }}
-                                        format="YYYY-MM-DD"
-                                        calendarPosition={"bottom"}
-                                        calendar={persian}
-                                        locale={persian_fa}
-                                        containerStyle={{
-                                          width: "100%",
-                                        }}
-                                        placeholder="تاریخ تولد را انتخاب کنید"
-                                        invalid={
-                                          validation.touched.dateOfBirth &&
-                                          validation.errors.dateOfBirth
-                                            ? true
-                                            : false
-                                        }
-                                      />
-                                      {validation.touched.dateOfBirth &&
-                                      validation.errors.dateOfBirth ? (
-                                        <div className="text-danger mt-1 small">
-                                          {validation.errors.dateOfBirth}
-                                        </div>
-                                      ) : null}
-                                    </div>
-                                  </FormGroup>
-                                </Col>
-                                <Col
-                                  md={4}
-                                  xl={4}
-                                  className="mb-3 mb-md-0 zIndex2"
-                                >
-                                  <div
-                                    className="text-start"
-                                    style={{ zIndex: "9999" }}
-                                  >
-                                    <Label htmlFor="gender">
-                                      {" "}
-                                      جنسیت
-                                      <span className="requareForm"> * </span>
-                                    </Label>
-                                    <Select
-                                      id="gender"
-                                      name="gender"
-                                      value={gender}
-                                      onChange={newValue => {
-                                        handleSelectGender(newValue),
-                                          validation.setFieldValue(
-                                            "gender",
-                                            newValue
-                                          )
-                                      }}
-                                      options={[
-                                        { label: "مرد", value: 1 },
-                                        { label: "زن", value: 2 },
-                                      ]}
-                                      defaultValue={null}
-                                      styles={{
-                                        menu: provided => ({
-                                          ...provided,
-                                          backgroundColor: "#fff",
-                                          color: "var(--bs-body-color)",
-                                          textAlign: "right,",
-                                        }),
-                                        option: (provided, state) => ({
-                                          ...provided,
-                                          ":hover": {
-                                            backgroundColor: "#eff2f7", // Change to your desired hover background color
-                                            cursor: "pointer", // Change the cursor to a pointer
-                                          },
-                                          backgroundColor: state.isSelected
-                                            ? "#BFC2C6"
-                                            : provided.backgroundColor,
-                                          color: "var(--bs-body-color)",
-                                          textAlign: "right,",
-                                        }),
-                                      }}
-                                      className="select2-selection text-start zIndex2"
-                                      noOptionsMessage={() =>
-                                        "گزینه مورد نظر یافت نشد"
-                                      }
-                                      placeholder="جنسیت کاربر را انتخاب کنید"
-                                      invalid={
-                                        validation.touched.gender &&
-                                        validation.errors.gender
-                                          ? true
-                                          : false
-                                      }
-                                    />
-                                    {validation.touched.gender &&
-                                    validation.errors.gender ? (
-                                      <div className="text-danger mt-1 small">
-                                        {validation.errors.gender}
-                                      </div>
-                                    ) : null}
-                                  </div>
-                                </Col>
-                                <Col md={4} xl={4}>
+                                <Col md={3} xl={3}>
                                   <div className="mb-3">
                                     <Label htmlFor="formrow-personaliCode-Input">
                                       {t("شماره تلفن همراه")}
@@ -559,7 +330,7 @@ const CreateUser = () => {
                                       onBlur={validation.handleBlur}
                                       value={validation.values.mobile}
                                       className="form-control"
-                                      id="formrow-personaliCode-Input"
+                                      id="formrow-mobile-Input"
                                       placeholder={
                                         "شماره تلفن همراه را وارد کنید"
                                       }
@@ -578,202 +349,191 @@ const CreateUser = () => {
                                     ) : null}
                                   </div>
                                 </Col>
+                              </Row>
+                            </Col>
+                          </Row>
+                          <Row className="justify-content-end me-1 mt-2 ">
+                            <Col className="col-auto px-0">
+                              <Button type="submit" color="success">
+                                {t("مرحله بعد")}
+                              </Button>
+                            </Col>
+                          </Row>
+                        </form>
+                      </TabPane>
+                      <TabPane tabId="2">
+                        <form onSubmit={validationUserSystem.handleSubmit}>
+                          <Row>
+                            <Col sm="12">
+                              <Row>
+                                <Col md={3} xl={3}>
+                                  <div className="mb-3">
+                                    <Label htmlFor="formrow-firstname-Input">
+                                      {t("نام کاربری")}
+                                      <span className="requareForm"> * </span>
+                                    </Label>
+                                    <Input
+                                      type="text"
+                                      name="userName"
+                                      onChange={e =>
+                                        validationUserSystem.handleChange(e)
+                                      }
+                                      onBlur={validationUserSystem.handleBlur}
+                                      value={
+                                        validationUserSystem.values.userName
+                                      }
+                                      className="form-control"
+                                      id="formrow-userName-Input"
+                                      placeholder={"نام کاربری را وارد کنید"}
+                                      invalid={
+                                        validationUserSystem.touched.userName &&
+                                        validationUserSystem.errors.userName
+                                          ? true
+                                          : false
+                                      }
+                                    />
+                                    {validationUserSystem.touched.userName &&
+                                    validationUserSystem.errors.userName ? (
+                                      <FormFeedback type="invalid">
+                                        {validationUserSystem.errors.userName}
+                                      </FormFeedback>
+                                    ) : null}
+                                  </div>
+                                </Col>
+                                <Col md={3} xl={3}>
+                                  <div className="mb-3">
+                                    <Label htmlFor="formrow-personaliCode-Input">
+                                      {t("رمز عبور")}
+                                      <span className="requareForm"> * </span>
+                                    </Label>
+                                    <Input
+                                      type="password"
+                                      name="password"
+                                      onChange={e =>
+                                        validationUserSystem.handleChange(e)
+                                      }
+                                      onBlur={validationUserSystem.handleBlur}
+                                      value={
+                                        validationUserSystem.values.password
+                                      }
+                                      className="form-control"
+                                      id="formrow-password-Input"
+                                      placeholder={"رمز عبور را وارد کنید"}
+                                      invalid={
+                                        validationUserSystem.touched.password &&
+                                        validationUserSystem.errors.password
+                                          ? true
+                                          : false
+                                      }
+                                    />
+                                    {validationUserSystem.touched.password &&
+                                    validationUserSystem.errors.password ? (
+                                      <FormFeedback type="invalid">
+                                        {validationUserSystem.errors.password}
+                                      </FormFeedback>
+                                    ) : null}
+                                  </div>
+                                </Col>
                                 <Col
-                                  md={4}
-                                  xl={4}
+                                  md={3}
+                                  xl={3}
                                   className="mb-3 mb-md-0 zIndex2"
                                 >
                                   <div
                                     className="text-start"
                                     style={{ zIndex: "9999" }}
                                   >
-                                    <Label htmlFor="maritalStatus">
+                                    <Label htmlFor="title">
                                       {" "}
-                                      وضعیت تاهل
+                                      سمت سغلی
                                       <span className="requareForm"> * </span>
                                     </Label>
-                                    <Select
-                                      id="maritalStatus"
-                                      name="maritalStatus"
-                                      value={taahol}
-                                      onChange={newValue => {
-                                        handleSelectTaahol(newValue),
-                                          validation.setFieldValue(
-                                            "maritalStatus",
-                                            newValue
-                                          )
-                                      }}
-                                      options={[
-                                        { label: "مجرد", value: 1 },
-                                        { label: "متاهل", value: 2 },
-                                      ]}
-                                      defaultValue={null}
-                                      styles={{
-                                        menu: provided => ({
-                                          ...provided,
-                                          backgroundColor: "#fff",
-                                          color: "var(--bs-body-color)",
-                                          textAlign: "right,",
-                                        }),
-                                        option: (provided, state) => ({
-                                          ...provided,
-                                          ":hover": {
-                                            backgroundColor: "#eff2f7", // Change to your desired hover background color
-                                            cursor: "pointer", // Change the cursor to a pointer
-                                          },
-                                          backgroundColor: state.isSelected
-                                            ? "#BFC2C6"
-                                            : provided.backgroundColor,
-                                          color: "var(--bs-body-color)",
-                                          textAlign: "right,",
-                                        }),
-                                      }}
-                                      className="select2-selection text-start zIndex2"
-                                      noOptionsMessage={() =>
-                                        "گزینه مورد نظر یافت نشد"
+                                    <Input
+                                      type="text"
+                                      name="side"
+                                      onChange={e =>
+                                        validationUserSystem.handleChange(e)
                                       }
-                                      placeholder="جنسیت کاربر را انتخاب کنید"
+                                      onBlur={validationUserSystem.handleBlur}
+                                      value={validationUserSystem.values.side}
+                                      className="form-control"
+                                      id="formrow-side-Input"
+                                      placeholder={" سمت شغلی را وارد کنید"}
                                       invalid={
-                                        validation.touched.maritalStatus &&
-                                        validation.errors.maritalStatus
+                                        validationUserSystem.touched.side &&
+                                        validationUserSystem.errors.side
                                           ? true
                                           : false
                                       }
                                     />
-                                    {validation.touched.maritalStatus &&
-                                    validation.errors.maritalStatus ? (
-                                      <div className="text-danger mt-1 small">
-                                        {validation.errors.maritalStatus}
-                                      </div>
+                                    {validationUserSystem.touched.side &&
+                                    validationUserSystem.errors.side ? (
+                                      <FormFeedback type="invalid">
+                                        {validationUserSystem.errors.side}
+                                      </FormFeedback>
+                                    ) : null}
+                                  </div>
+                                </Col>
+                                <Col md={3} xl={3}>
+                                  <div className="mb-3">
+                                    <Label htmlFor="formrow-personaliCode-Input">
+                                      {t("سمت محترمانه شغلی")}
+                                      <span className="requareForm"> * </span>
+                                    </Label>
+                                    <Input
+                                      type="text"
+                                      name="respectfulSide"
+                                      onChange={e =>
+                                        validationUserSystem.handleChange(e)
+                                      }
+                                      onBlur={validationUserSystem.handleBlur}
+                                      value={
+                                        validationUserSystem.values
+                                          .respectfulSide
+                                      }
+                                      className="form-control"
+                                      id="formrow-respectfulSide-Input"
+                                      placeholder={
+                                        " سمت محترمانه شغل خود را وارد کنید"
+                                      }
+                                      invalid={
+                                        validationUserSystem.touched
+                                          .respectfulSide &&
+                                        validationUserSystem.errors
+                                          .respectfulSide
+                                          ? true
+                                          : false
+                                      }
+                                    />
+                                    {validationUserSystem.touched
+                                      .respectfulSide &&
+                                    validationUserSystem.errors
+                                      .respectfulSide ? (
+                                      <FormFeedback type="invalid">
+                                        {
+                                          validationUserSystem.errors
+                                            .respectfulSide
+                                        }
+                                      </FormFeedback>
                                     ) : null}
                                   </div>
                                 </Col>
                               </Row>
                             </Col>
                           </Row>
-                        </TabPane>
-                        <TabPane tabId="4">
-                          <Row>
-                            <Col sm="12">
-                              <form onSubmit={validation.handleSubmit}>
-                                <Row>
-                                  <Col md={6} xl={6}>
-                                    <div className="mb-3">
-                                      <Label htmlFor="formrow-firstname-Input">
-                                        {t("تحصیلات")}
-                                      </Label>
-                                      <Input
-                                        type="text"
-                                        name="education"
-                                        onChange={e =>
-                                          validation.handleChange(e)
-                                        }
-                                        onBlur={validation.handleBlur}
-                                        value={validation.values.education}
-                                        className="form-control"
-                                        id="formrow-firstname-Input"
-                                        placeholder={
-                                          "تحصیلات کاربر را انتخاب کنید"
-                                        }
-                                        invalid={
-                                          validation.touched.education &&
-                                          validation.errors.education
-                                            ? true
-                                            : false
-                                        }
-                                      />
-                                      {validation.touched.education &&
-                                      validation.errors.education ? (
-                                        <FormFeedback type="invalid">
-                                          {validation.errors.education}
-                                        </FormFeedback>
-                                      ) : null}
-                                    </div>
-                                  </Col>
-                                  <Col md={6} xl={6}>
-                                    <div className="mb-3">
-                                      <Label htmlFor="formrow-personaliCode-Input">
-                                        {t("شماره تلفن")}
-                                      </Label>
-                                      <Input
-                                        type="number"
-                                        name="phoneNumber"
-                                        onChange={e =>
-                                          validation.handleChange(e)
-                                        }
-                                        onBlur={validation.handleBlur}
-                                        value={validation.values.phoneNumber}
-                                        className="form-control"
-                                        id="formrow-personaliCode-Input"
-                                        placeholder={
-                                          "شماره تلفن کاربر را وارد کنید"
-                                        }
-                                        invalid={
-                                          validation.touched.phoneNumber &&
-                                          validation.errors.phoneNumber
-                                            ? true
-                                            : false
-                                        }
-                                      />
-                                      {validation.touched.phoneNumber &&
-                                      validation.errors.phoneNumber ? (
-                                        <FormFeedback type="invalid">
-                                          {validation.errors.phoneNumber}
-                                        </FormFeedback>
-                                      ) : null}
-                                    </div>
-                                  </Col>
-                                  <Col md={12} xl={12}>
-                                    <div className="mb-3">
-                                      <Label htmlFor="formrow-personaliCode-Input">
-                                        {t("آدرس")}
-                                      </Label>
-                                      <Input
-                                        type="text"
-                                        name="address"
-                                        onChange={e =>
-                                          validation.handleChange(e)
-                                        }
-                                        onBlur={validation.handleBlur}
-                                        value={validation.values.address}
-                                        Row="3"
-                                        className="form-control"
-                                        id="formrow-personaliCode-Input"
-                                        placeholder={
-                                          "آدرس محل سکونت کاربر را وارد کنید"
-                                        }
-                                        invalid={
-                                          validation.touched.address &&
-                                          validation.errors.address
-                                            ? true
-                                            : false
-                                        }
-                                      />
-                                      {validation.touched.address &&
-                                      validation.errors.address ? (
-                                        <FormFeedback type="invalid">
-                                          {validation.errors.address}
-                                        </FormFeedback>
-                                      ) : null}
-                                    </div>
-                                  </Col>
-                                </Row>
-                              </form>
+                          <Row className="justify-content-end me-1 mt-2 ">
+                            <Col className="col-auto px-0">
+                              <Button type="submit" color="success">
+                                {t("ثبت نهایی")}
+                              </Button>
                             </Col>
                           </Row>
-                        </TabPane>
-                      </TabContent>
-                    </Row>
-                  </CardBody>
-                </Card>
-                <Row className="justify-content-end me-1 ">
-                  <Col className="col-auto px-0">
-                    <Button type="submit" color="success">
-                      {t("ثبت کاربر")}
-                    </Button>
-                  </Col>
-                </Row>
-              </form>
+                        </form>
+                      </TabPane>
+                    </TabContent>
+                  </Row>
+                </CardBody>
+              </Card>
             </Col>
           </Row>
         </Container>

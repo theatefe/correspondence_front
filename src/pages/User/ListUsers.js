@@ -59,40 +59,11 @@ function ListUsers() {
         id: item.id,
         respectfulTitle: item.respectfulTitle,
         fullname: item.name + " " + item.lastName,
-        gender: item.gender,
         mobile: item.mobile,
         activity: item.activeStatus,
       }
     })
     setUsersList(users)
-  }
-  // handle select role *************************
-  function handleSelectRole(value) {
-    setRole(value)
-  }
-  // handle change active ***********************
-  const handleChangeActive = async id => {
-    try {
-      const headers = {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      }
-      await axios
-        .post(
-          `http://localhost:3000/accounts/auth/toggle-active-status/${id}/`,
-          {},
-          { headers }
-        )
-        .then(response => {
-          if (response.status == 200) {
-            toastr.success("وضعیت کاربر با موفقیت به روز رسانی شد")
-            getUserList()
-          }
-          console.log("Response:", response)
-        })
-    } catch (err) {
-      console.error("Error:", err)
-    }
   }
   // handle reset password **********************
   const handleResetPassword = async () => {
@@ -148,12 +119,6 @@ function ListUsers() {
       Cell: ({ cell }) => <div className="lopp">{cell.value}</div>,
     },
     {
-      Header: "جنسیت",
-      accessor: "gender",
-      flag: "true",
-      Cell: ({ cell }) => <div className="lopp">{cell.value}</div>,
-    },
-    {
       Header: "تلفن همراه",
       accessor: "mobile",
       flag: "true",
@@ -184,54 +149,6 @@ function ListUsers() {
           style={{ display: "flex", justifyContent: "center" }}
           className="list-unstyled hstack gap-1 mb-0"
         >
-          {/* <li>
-            <OverlayTrigger
-              placement={"top"}
-              overlay={
-                <Tooltip id={`tooltip-${"بازنشانی رمزعبور"}`}>
-                  <strong>{"بازنشانی رمزعبور"}</strong>
-                </Tooltip>
-              }
-            >
-              <Button
-                variant="secondary"
-                onClick={() => toggleModal(cell.value)}
-              >
-                <i
-                  className="mdi mdi-lock-reset md-18"
-                  id="viewtooltip"
-                  style={{ fontSize: "16px" }}
-                />
-              </Button>
-            </OverlayTrigger>
-          </li> */}
-          {/* <li>
-            <OverlayTrigger
-              placement={"top"}
-              overlay={
-                <Tooltip id={`tooltip-${"تغییر وضعیت "}`}>
-                  <strong>{"تغییر وضعیت "}</strong>
-                </Tooltip>
-              }
-            >
-              <Link
-                onClick={() => handleChangeActive(`${cell.value}`)}
-                className={`btn ${
-                  cell.row.original.activity === "فعال"
-                    ? "btn-soft-primary"
-                    : "btn-soft-danger"
-                }`}
-              >
-                <i
-                  className={`mdi mdi-account${
-                    cell.row.original.activity === "فعال" ? "" : "-off"
-                  } md-18`}
-                  id="viewtooltip"
-                  style={{ fontSize: "16px" }}
-                />
-              </Link>
-            </OverlayTrigger>
-          </li> */}
           <li>
             <OverlayTrigger
               placement={"top"}
