@@ -49,11 +49,6 @@ import DashboardCrypto from "../pages/Dashboard-crypto/index"
 import Blog from "../pages/Dashboard-Blog/index"
 import DashboardJob from "../pages/DashboardJob/index"
 
-// Maps
-import MapsGoogle from "../pages/Maps/MapsGoogle"
-import MapsVector from "../pages/Maps/MapsVector"
-import MapsLeaflet from "../pages/Maps/MapsLeaflet"
-
 //Correspondence
 import NewCorrespondence from "../pages/Tables/NewCorrespondence"
 import Correspondence from "../pages/Tables/Correspondence"
@@ -197,10 +192,6 @@ const authProtectedRoutes = [
   { path: "/draft-message/:id", component: <DraftMessage /> },
   { path: "/report-messages", component: <DatatableReportMessages /> },
 
-  // Maps
-  { path: "/maps-google", component: <MapsGoogle /> },
-  { path: "/maps-vector", component: <MapsVector /> },
-  { path: "/maps-leaflet", component: <MapsLeaflet /> },
 
   //Utility
   { path: "/pages-starter", component: <PagesStarter /> },
