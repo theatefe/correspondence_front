@@ -65,13 +65,10 @@ function ListUsers() {
     })
     setUsersList(users)
   }
-<<<<<<< HEAD
-=======
   // handle select role *************************
   function handleSelectRole(value) {
     setRole(value)
   }
->>>>>>> 231c31a47444066e64df1974930764289292c364
   // handle reset password **********************
   const handleResetPassword = async () => {
     try {

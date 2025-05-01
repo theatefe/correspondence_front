@@ -32,11 +32,7 @@ import createUserSystemApi from "../../api/admin/userSystem/create"
 import Breadcrumbs from "../../components/Common/Breadcrumb"
 // Validation Formik and yup
 import * as Yup from "yup"
-<<<<<<< HEAD
 import { useFormik } from "formik"
-=======
-import { useFormik} from "formik"
->>>>>>> 231c31a47444066e64df1974930764289292c364
 
 //meta title
 document.title = "ثبت کاربر جدید - سامانه مکاتبات"
@@ -50,10 +46,11 @@ const CreateUser = () => {
   const [activeTab, setactiveTab] = useState("1")
 
   const toggle = tab => {
-    if (activeTab !== tab) {
-      setactiveTab(tab)
+      if (activeTab !== tab) {
+        setactiveTab(tab)
+      }
     }
-  }
+  
   // handle create Form Api
   const handleSubmitForm = async values => {
     const data = {
