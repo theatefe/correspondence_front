@@ -119,11 +119,7 @@
     "yup": "^0.32.11"
   },
   "scripts": {
-<<<<<<< HEAD
-    "start": "set PORT=3004 & react-scripts start",
-=======
-    "start": "react-scripts start",
->>>>>>> 231c31a47444066e64df1974930764289292c364
+    "start": "set PORT=3003 & react-scripts start",
     "build": "react-scripts build --max_old_space_size=8000 build",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
